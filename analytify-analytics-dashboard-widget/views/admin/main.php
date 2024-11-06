@@ -38,6 +38,7 @@ if (! defined('ABSPATH')) {
 								<option value="keywords"><?php _e('Keywords', 'analytify-analytics-dashboard-widget'); ?></option>
 								<?php if ('ga3' === $ga_mode) { ?><option value="social-media"><?php analytify_e('Social Media', 'analytify-analytics-dashboard-widget'); ?></option><?php } ?>
 								<option value="top-reffers"><?php analytify_e('Top Referrers', 'analytify-analytics-dashboard-widget'); ?></option>
+								<option value="visitors-devices"><?php analytify_e('Visitors Devices', 'analytify-analytics-dashboard-widget'); ?></option>
 							</select>
 							<input type="submit" value="<?php _e('View Stats', 'analytify-analytics-dashboard-widget'); ?>" name="view_data" class="analytify_submit_date_btn">
 						</div>
@@ -49,6 +50,7 @@ if (! defined('ABSPATH')) {
 		<div class="analytify-dashboard-inner">
 			<div class="analytify_wraper">
 				<div id="inner_analytify_dashboard" class="stats_loading">
+					<div id="analytify_chart_visitor_devices"> </div>
 					<div class="analytify_general_status analytify_status_box_wraper analytify_widget_return_wrapper"></div>
 				</div>
 			</div>

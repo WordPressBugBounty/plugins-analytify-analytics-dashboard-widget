@@ -3,8 +3,8 @@ Contributors: hiddenpearls, desideveloper
 Donate link: https://analytify.io/details
 Tags: dashboard, Analytics, Google Analytics, Statistics, widget, analytify, googleanalytics, insights, wordpress analytics, tracking, google analytics realtime,
 Requires at least: 3.0.1
-Tested up to: 6.4
-Stable tag: 5.2.0
+Tested up to: 6.7
+Stable tag: 5.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,13 @@ Not at all. Analytify uses Google Analytics Universal tracking JS code to track 
 1. [Google Analytics Dashboard Widget for WordPress](https://analytify.io/features/)
 
 == Changelog ==
+
+= 5.5.0 - 2024-11-06 =
+* New Feature: Added Graph for Visitors and Views in the General Statistics section (visible when Pro is activated).
+* New Feature: Introduced a section with a pie chart for Visitor Devices (visible when Pro is activated).
+* New Feature: Filter Provided for Top Countries, Top Pages, Top Keywords and Top Referrals Section rows per page.
+* Enhancement: Removing Google Analytics V3 functions from the widget completely.
+* Compatibility: Compatible to WordPress 6.7
 
 = 5.2.0 - 2024-01-16 =
 * New Feature:: Filter Provided for Top Cities Section rows per page.
@@ -212,5 +219,5 @@ Initial Release.
 
 == Upgrade Notice ==
 
-= 5.2.0 =
-* [Important Message] Switch to Google Analytics GA4 now.
+= 5.5.0 =
+* [Important Message] Switch to Google Analytics GA4 now. Removing Google Analytics V3 Completely.

@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: Analytify Dashboard Widget
  * Plugin URI: https://analytify.io/add-ons/google-analytics-dashboard-widget-wordpress/
  * Description: It is a Free Add-on for Analytify plugin to show Google Analytics widget at WordPress dashboard. This is developed on the requests of our users.
- * Version: 5.2.0
+ * Version: 5.5.0
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Author: Analytify
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Domain Path: /languages
  */
 
-define( 'ANALYTIFY_DASHBOARD_VERSION', '5.2.0' );
+define( 'ANALYTIFY_DASHBOARD_VERSION', '5.5.0' );
 define( 'ANALYTIFY_DASHBOARD_ROOT_PATH', dirname( __FILE__ ) );
 define( 'ANALYTIFY_WIDGET_PATH', plugin_dir_url( __FILE__ ) );
 
@@ -62,7 +62,7 @@ function wp_analytify_dashboard_plugin_action_links( $links ) {
 	$settings_link = '';
 
 	if ( ! class_exists( 'WP_Analytify_Pro' ) ) {
-		$settings_link .= sprintf( esc_html__( '%1$s Get Analytify Pro %2$s', 'wp-analytify' ),  '<a  href="https://analytify.io/pricing/?utm_source=analytify-dashboard-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade" target="_blank" style="color:#3db634;">', '</a>' );
+		$settings_link .= sprintf( esc_html__( '%1$s Get Analytify Pro %2$s', 'wp-analytify' ),  '<a  href="https://analytify.io/pricing/?utm_source=analytify-widget-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Get+Analytify+Pro" target="_blank" style="color:#3db634;">', '</a>' );
 		array_unshift( $links, $settings_link );
 	}
 
@@ -99,8 +99,16 @@ function pa_dashboard_layout_script() {
 	}
 
 	wp_enqueue_script( 'analytify-dashboard-layout', plugins_url( '/assets/js/wp-analytify-dashboard-layout.js', __FILE__ ), false, ANALYTIFY_DASHBOARD_VERSION );
-}
+	// Get the path of the wp-analytify plugin directory
+		$analytify_plugin_url = plugin_dir_url( 'wp-analytify/wp-analytify.php' );
 
+		// Enqueue the ECharts scripts from wp-analytify
+		wp_enqueue_script( 'echarts-js', $analytify_plugin_url . 'assets/js/dist/echarts.js', array('jquery', 'jquery-ui-tabs'), ANALYTIFY_VERSION, true );
+		wp_enqueue_script( 'echarts-pie-js', $analytify_plugin_url . 'assets/js/dist/chart/pie.js', false, ANALYTIFY_VERSION, true );
+		wp_enqueue_script( 'echarts-map-js', $analytify_plugin_url . 'assets/js/dist/chart/map.js', false, ANALYTIFY_VERSION, true );
+		wp_enqueue_script( 'echarts-line-js', $analytify_plugin_url . 'assets/js/dist/chart/line.js', false, ANALYTIFY_VERSION, true );
+		wp_enqueue_script( 'echarts-bar-js', $analytify_plugin_url . 'assets/js/dist/chart/bar.js', false, ANALYTIFY_VERSION, true );
+}
 /**
  * Active Analytify Free.
  *
@@ -214,7 +222,7 @@ function analytify_widget_notice( $message, $class ) {
 	echo '<div class="wp-analytify-notification ' . $class . '">
 		<a class="" href="#" aria-label="Dismiss the welcome panel"></a>
 		<div class="wp-analytify-notice-logo">
-			<img src="' . plugins_url( 'assets/images/logo.svg', __FILE__ ) . '" alt="">
+			<img src="' . plugins_url( 'assets/images/logo.svg', __FILE__ ) . '" alt="analytify">
 		</div>
 		<div class="wp-analytify-notice-discription">
 			<p>' . $message . '</p>

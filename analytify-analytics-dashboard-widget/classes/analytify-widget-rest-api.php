@@ -136,7 +136,7 @@ class Analytify_Widget_Rest_API {
 
 		switch ( $request_type ) {
 			case 'general-statistics':
-				$stats = 'ga4' === $this->ga_mode ? $this->get_general_statistics_ga4() : $this->get_general_statistics_ua();
+				$stats = 'ga4' === $this->ga_mode ? $this->get_general_statistics_ga4() : '';
 
 				$stats = apply_filters( 'analytify_widget_formate_general_statistics', $stats );
 
@@ -148,7 +148,7 @@ class Analytify_Widget_Rest_API {
 				return;
 
 			case 'top-pages-by-views':
-				$data = 'ga4' === $this->ga_mode ? $this->get_top_pages_by_views_ga4() : $this->get_top_pages_by_views_ua();
+				$data = 'ga4' === $this->ga_mode ? $this->get_top_pages_by_views_ga4() : '';
 
 				$stats['success']       = true;
 				$stats['pagination']    = true;
@@ -164,7 +164,7 @@ class Analytify_Widget_Rest_API {
 				return;
 
 			case 'top-countries':
-				$data = 'ga4' === $this->ga_mode ? $this->get_top_countries_ga4() : $this->get_top_countries_ua();
+				$data = 'ga4' === $this->ga_mode ? $this->get_top_countries_ga4() : '';
 
 				$stats['success']       = true;
 				$stats['pagination']    = true;
@@ -180,7 +180,7 @@ class Analytify_Widget_Rest_API {
 				return;
 
 			case 'top-cities':
-				$data = 'ga4' === $this->ga_mode ? $this->get_top_cities_ga4() : $this->get_top_cities_ua();
+				$data = 'ga4' === $this->ga_mode ? $this->get_top_cities_ga4() : '';
 
 				$stats['success']       = true;
 				$stats['pagination']    = true;
@@ -196,7 +196,7 @@ class Analytify_Widget_Rest_API {
 				return;
 
 			case 'keywords':
-				$data = 'ga4' === $this->ga_mode ? $this->get_keywords_ga4() : $this->get_keywords_ua();
+				$data = 'ga4' === $this->ga_mode ? $this->get_keywords_ga4() : '';
 
 				$stats['success']       = $data ? true : false;
 				$stats['pagination']    = true;
@@ -220,7 +220,7 @@ class Analytify_Widget_Rest_API {
 					return new WP_Error( 'analytify_invalid_endpoint', esc_html__( 'Invalid endpoint.', 'analytify-analytics-dashboard-widget' ), array( 'status' => 404 ) );
 				}
 
-				$data = 'ga4' === $this->ga_mode ? $this->get_social_media_ga4() : $this->get_social_media_ua();
+				$data = 'ga4' === $this->ga_mode ? $this->get_social_media_ga4() : '';
 
 				$stats['success']       = true;
 				$stats['pagination']    = true;
@@ -236,7 +236,7 @@ class Analytify_Widget_Rest_API {
 				return;
 
 			case 'top-reffers':
-				$data = 'ga4' === $this->ga_mode ? $this->get_top_reffers_ga4() : $this->get_top_reffers_ua();
+				$data = 'ga4' === $this->ga_mode ? $this->get_top_reffers_ga4() : '';
 
 				$stats['success']       = true;
 				$stats['pagination']    = true;
@@ -250,6 +250,60 @@ class Analytify_Widget_Rest_API {
 
 				wp_send_json( $stats );
 				return;
+
+            case 'visitors-devices':
+                $chart_description = array(
+                    'visitor_devices' => array(
+                        'title' => esc_html__('Devices of Visitors', 'wp-analytify'),
+                        'type' => 'PIE',
+                        'stats' => array(
+                            'mobile' => array(
+                                'label' => esc_html__('Mobile', 'wp-analytify'),
+                                'number' => 0,
+                            ),
+                            'tablet' => array(
+                                'label' => esc_html__('Tablet', 'wp-analytify'),
+                                'number' => 0,
+                            ),
+                            'desktop' => array(
+                                'label' => esc_html__('Desktop', 'wp-analytify'),
+                                'number' => 0,
+                            ),
+                        ),
+                        'colors' => apply_filters('analytify_visitor_devices_chart_colors', array('#444444', '#ffbc00', '#ff5252')),
+                    )
+                );
+                $device_category_stats = array();
+                $device_category_stats = $this->wp_analytify->get_reports(
+                    'show-default-overall-device-dashboard',
+                    array(
+                        'sessions',
+                    ),
+                    $this->get_dates(),
+                    array(
+                        'deviceCategory',
+                    ),
+                    array(
+                        'type' => 'dimension',
+                        'name' => 'deviceCategory',
+                    )
+                );
+                if ($device_category_stats['rows']) {
+                    foreach ($device_category_stats['rows'] as $device) {
+                        $chart_description['visitor_devices']['stats'][$device['deviceCategory']]['number'] = $device['sessions'];
+                    }
+                }
+                $stats['success'] = true;
+                $stats['pagination'] = true;
+                $stats['title'] = esc_html__('Visitors Devices', 'analytify-analytics-dashboard-widget');
+                $stats['bottom_info'] = esc_html__('Devices of visitors on your website.', 'analytify-analytics-dashboard-widget');
+                $stats['stats']['head'] = array(
+                    esc_html__('Refer', 'analytify-analytics-dashboard-widget'),
+                    esc_html__('Views', 'analytify-analytics-dashboard-widget'),
+                );
+                $stats['stats']['data'] = $chart_description;
+                wp_send_json($stats);
+                return;
 
 			default:
 				// If no request type match, Return error.
@@ -330,37 +384,7 @@ class Analytify_Widget_Rest_API {
 		return $boxes;
 	}
 
-	/**
-	 * Return 'general_statistics' for UA
-	 *
-	 * @return array
-	 */
-	private function get_general_statistics_ua() {
 
-		$raw_new = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions,ga:users,ga:bounceRate,ga:avgSessionDuration,ga:pageviews,ga:percentNewSessions,ga:sessionDuration', $this->start_date, $this->end_date, false, false, false, false, 'widget-show-overall-dashboard' );
-
-		$raw_returning = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:users', $this->start_date, $this->end_date, 'ga:userType', false, false, false, 'widget-show-default-new-returning-dashboard' );
-
-		$new_users       = isset( $raw_returning->rows[0][1] ) ? WPANALYTIFY_Utils::pretty_numbers( $raw_returning->rows[0][1] ) : 0;
-		$returning_users = isset( $raw_returning->rows[1][1] ) ? WPANALYTIFY_Utils::pretty_numbers( $raw_returning->rows[1][1] ) : 0;
-
-		$new_v_returning_visitors = sprintf( __( '%1$s vs %2$s', 'analytify-analytics-dashboard-widget' ), '<span class="analytify_general_stats_value">' . $new_users . '</span>', '<span class="analytify_general_stats_value">' . $returning_users . '</span>' );
-
-		$boxes = array();
-
-		$boxes['sessions']                 = number_format( $raw_new->totalsForAllResults['ga:sessions'] );
-		$boxes['visitors']                 = number_format( $raw_new->totalsForAllResults['ga:users'] );
-		$boxes['bounce_rate']              = WPANALYTIFY_Utils::pretty_numbers( $raw_new->totalsForAllResults['ga:bounceRate'] );
-		$boxes['avg_time_on_site']         = ( $raw_new->totalsForAllResults['ga:sessions'] <= 0 ) ? '00:00:00' : $this->wp_analytify->pa_pretty_time( $raw_new->totalsForAllResults['ga:avgSessionDuration'] );
-		$boxes['pages_per_session']        = ( $raw_new->totalsForAllResults['ga:sessions'] <= 0 ) ? '0.00' : number_format( round( $raw_new->totalsForAllResults['ga:pageviews'] / $raw_new->totalsForAllResults['ga:sessions'], 2 ), 2 );
-		$boxes['page_views']               = ( $raw_new->totalsForAllResults['ga:pageviews'] <= 0 ) ? '0' : number_format( $raw_new->totalsForAllResults['ga:pageviews'] );
-		$boxes['new_sessions']             = ( $raw_new->totalsForAllResults['ga:percentNewSessions'] > 0 ) ? WPANALYTIFY_Utils::pretty_numbers( $raw_new->totalsForAllResults['ga:percentNewSessions'] ). '%' : '0';
-		$boxes['new_v_returning_visitors'] = $new_v_returning_visitors;
-
-		$boxes['bottom_info'] = $this->wp_analytify->pa_pretty_time( $raw_new->totalsForAllResults['ga:sessionDuration'] );
-
-		return $boxes;
-	}
 
 	/**
 	 * Adds labels and description to 'general_statistics'.
@@ -474,24 +498,6 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
-	/**
-	 * Return 'top_pages_by_views' for UA
-	 *
-	 * @return array
-	 */
-	private function get_top_pages_by_views_ua() {
-		$stats = array();
-
-		// API request limit.
-		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 50, 'top_pages_by_views' );
-
-		$raw_stats = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:pageviews', $this->start_date, $this->end_date, 'ga:PageTitle', '-ga:pageviews', 'ga:pageTitle!=(not set)', $api_request_limit, 'widget-show-top-pages-dashboard' );
-		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
-			$stats = $raw_stats['rows'];
-		}
-
-		return $stats;
-	}
 
 	/**
 	 * Return 'top_countries' for GA4
@@ -545,24 +551,6 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
-	/**
-	 * Return 'top_pages_by_views' for UA
-	 *
-	 * @return array
-	 */
-	private function get_top_countries_ua() {
-		$stats = array();
-
-		// API request limit.
-		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 50, 'top_countries' );
-
-		$raw_stats = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:country', '-ga:sessions', 'ga:country!=(not set)', $api_request_limit, 'widget-show-top-countries-dashboard' );
-		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
-			$stats = $raw_stats['rows'];
-		}
-
-		return $stats;
-	}
 
 	/**
 	 * Return 'top_cities' for GA4
@@ -616,24 +604,6 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
-	/**
-	 * Return 'top_cities' for UA
-	 *
-	 * @return array
-	 */
-	private function get_top_cities_ua() {
-		$stats = array();
-
-		// API request limit.
-		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 50, 'top_cities' );
-
-		$raw_stats = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:city', '-ga:sessions', 'ga:city!=(not set)', $api_request_limit, 'widget-show-top-cities-dashboard' );
-		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
-			$stats = $raw_stats['rows'];
-		}
-
-		return $stats;
-	}
 
 	/**
 	 * Return 'keywords' for GA4
@@ -671,24 +641,6 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
-	/**
-	 * Return 'keywords' for UA
-	 *
-	 * @return array
-	 */
-	private function get_keywords_ua() {
-		$stats = array();
-
-		// API request limit.
-		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 50, 'keywords' );
-
-		$raw_stats = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:keyword', '-ga:sessions', false, $api_request_limit, 'widget-show-top-keywords-dashboard' );
-		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
-			$stats = $raw_stats['rows'];
-		}
-
-		return $stats;
-	}
 
 	/**
 	 * Return 'social-media' for GA4
@@ -703,24 +655,6 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
-	/**
-	 * Return 'social-media' for UA
-	 *
-	 * @return array
-	 */
-	private function get_social_media_ua() {
-		$stats = array();
-
-		// API request limit.
-		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 50, 'social_media' );
-
-		$raw_stats = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:socialNetwork', '-ga:sessions', 'ga:socialNetwork!=(not set)', $api_request_limit, 'widget-show-top-socialmedia-dashboard' );
-		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
-			$stats = $raw_stats['rows'];
-		}
-
-		return $stats;
-	}
 
 	/**
 	 * Return 'top-reffers' for GA4
@@ -763,24 +697,6 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
-	/**
-	 * Return 'top-reffers' for UA
-	 *
-	 * @return array
-	 */
-	private function get_top_reffers_ua() {
-		$stats = array();
-
-		// API request limit.
-		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 50, 'top_reffers' );
-
-		$raw_stats = $this->wp_analytify->pa_get_analytics_dashboard( 'ga:sessions', $this->start_date, $this->end_date, 'ga:source', '-ga:sessions', false, $api_request_limit, 'widget-show-top-reffers-dashboard' );
-		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
-			$stats = $raw_stats['rows'];
-		}
-
-		return $stats;
-	}
 
 }
 
