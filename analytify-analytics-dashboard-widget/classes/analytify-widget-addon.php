@@ -149,7 +149,7 @@ if ( ! class_exists( 'AnalytifyWidgetAddon' ) ) {
 				'top_pages_by_views_filter' => apply_filters( 'analytify_widget_top_pages_by_views_filter', 5 ),
 				'top_keywords_filter' => apply_filters( 'analytify_widget_top_keywords_filter', 5 ),
 				'top_refferals_filter' => apply_filters( 'analytify_widget_top_refferals_filter', 5 ),
-
+				'graph' => apply_filters( 'analytify_widget_graph_display_filter', false ),
 			);
 
 

@@ -158,22 +158,17 @@ jQuery(document).ready(function ($) {
 								try {
 								  is_three_month = data.stats_data.is_three_month;
 			  
-								  require([
-									"echarts",
-									"echarts/chart/bar",
-									"echarts/chart/line",
-									], function (ec) {
 									// Initialize after dom ready.
-									var years_graph_by_visitors = ec.init(
+									var years_graph_by_visitors = echarts.init(
 										document.getElementById("analytify_years_graph_by_visitors")
 									);
-									var months_graph_by_visitors = ec.init(
+									var months_graph_by_visitors = echarts.init(
 										document.getElementById("analytify_months_graph_by_visitors")
 									);
-									var years_graph_by_view = ec.init(
+									var years_graph_by_view = echarts.init(
 										document.getElementById("analytify_years_graph_by_view")
 									);
-									var months_graph_by_view = ec.init(
+									var months_graph_by_view = echarts.init(
 										document.getElementById("analytify_months_graph_by_view")
 									);
 
@@ -614,13 +609,12 @@ jQuery(document).ready(function ($) {
 										console.log(err);
 										}
 									};
-								});
 								} catch (err) {
 								  console.log(err);
 								}
 							  });
 						  }
-						if ('active' === analytify_dashboard_widget.pro_active) {
+						if ('active' === analytify_dashboard_widget.pro_active && analytify_dashboard_widget.graph) {
 							jQuery(document).ready(function ($) {
 								runCode($);
 
@@ -810,11 +804,6 @@ jQuery(document).ready(function ($) {
 						  parseInt(device_visitors_box.stats.tablet.number) +
 						  parseInt(device_visitors_box.stats.desktop.number);
 			
-						require([
-							'echarts',
-							'echarts/chart/pie',
-							],
-						  function (ec) {
 							if ($("#analytify_chart_visitor_devices").length) {
 							  const setting_title = "Devices of Visitors";
 							  const setting_stats = device_visitors_box.stats;
@@ -857,7 +846,7 @@ jQuery(document).ready(function ($) {
 									]
 								};
 		
-								const user_device_graph = ec.init(document.getElementById('analytify_chart_visitor_devices'));
+								const user_device_graph = echarts.init(document.getElementById('analytify_chart_visitor_devices'));
 								user_device_graph.setOption(user_device_graph_options);
 		
 								window.onresize = function () {
@@ -885,8 +874,6 @@ jQuery(document).ready(function ($) {
 												  </div>`;
 							  }
 							}
-						  }
-						);
 					  }
 				} else if (response.message) {
 					markup = `<div class="analytify-stats-error-msg wpanalytify">

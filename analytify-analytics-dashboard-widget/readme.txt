@@ -1,10 +1,10 @@
 === Google Analytics Dashboard Widget by Analytify ===
 Contributors: hiddenpearls, desideveloper
 Donate link: https://analytify.io/details
-Tags: dashboard, Analytics, Google Analytics, Statistics, widget, analytify, googleanalytics, insights, wordpress analytics, tracking, google analytics realtime,
+Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 5.5.0
+Stable tag: 5.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,13 @@ Not at all. Analytify uses Google Analytics Universal tracking JS code to track 
 1. [Google Analytics Dashboard Widget for WordPress](https://analytify.io/features/)
 
 == Changelog ==
+
+= 5.5.1 - 2025-02-04 =
+* Enhancement: Updated ECharts library to the latest version 5.5.1
+* Enhancement: Filter added to show Visitors/Views Graph in General Statistics section: [analytify_widget_graph_display_filter](https://analytify.io/doc/analytify-filters/#show-visitors-views-graph-in-the-general-statistics-section-of-analytify-dashboard-widget)
+* Bug Fix: Conflict with WP Mail SMTP Widget. 
+* Bug Fix: Years section in the Visitors/Views Graph showing no data. 
+* Compatibility: Compatible to WordPress 6.7
 
 = 5.5.0 - 2024-11-06 =
 * New Feature: Added Graph for Visitors and Views in the General Statistics section (visible when Pro is activated).
@@ -219,5 +226,5 @@ Initial Release.
 
 == Upgrade Notice ==
 
-= 5.5.0 =
-* [Important Message] Switch to Google Analytics GA4 now. Removing Google Analytics V3 Completely.
+= 5.5.1 =
+* Upgrade Google Analytics Widget Now.

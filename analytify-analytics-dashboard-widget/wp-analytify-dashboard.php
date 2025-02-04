@@ -6,17 +6,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 /*
  * Plugin Name: Analytify Dashboard Widget
  * Plugin URI: https://analytify.io/add-ons/google-analytics-dashboard-widget-wordpress/
- * Description: It is a Free Add-on for Analytify plugin to show Google Analytics widget at WordPress dashboard. This is developed on the requests of our users.
- * Version: 5.5.0
+ * Description: This Analytify's free addon adds the Google Analytics widget at WordPress dashboard.
+ * Version: 5.5.1
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Author: Analytify
  * Author URI: https://analytify.io/details
  * Text Domain: analytify-analytics-dashboard-widget
  * Domain Path: /languages
+ * Requires Plugins: wp-analytify
  */
 
-define( 'ANALYTIFY_DASHBOARD_VERSION', '5.5.0' );
+define( 'ANALYTIFY_DASHBOARD_VERSION', '5.5.1' );
 define( 'ANALYTIFY_DASHBOARD_ROOT_PATH', dirname( __FILE__ ) );
 define( 'ANALYTIFY_WIDGET_PATH', plugin_dir_url( __FILE__ ) );
 
@@ -103,11 +104,7 @@ function pa_dashboard_layout_script() {
 		$analytify_plugin_url = plugin_dir_url( 'wp-analytify/wp-analytify.php' );
 
 		// Enqueue the ECharts scripts from wp-analytify
-		wp_enqueue_script( 'echarts-js', $analytify_plugin_url . 'assets/js/dist/echarts.js', array('jquery', 'jquery-ui-tabs'), ANALYTIFY_VERSION, true );
-		wp_enqueue_script( 'echarts-pie-js', $analytify_plugin_url . 'assets/js/dist/chart/pie.js', false, ANALYTIFY_VERSION, true );
-		wp_enqueue_script( 'echarts-map-js', $analytify_plugin_url . 'assets/js/dist/chart/map.js', false, ANALYTIFY_VERSION, true );
-		wp_enqueue_script( 'echarts-line-js', $analytify_plugin_url . 'assets/js/dist/chart/line.js', false, ANALYTIFY_VERSION, true );
-		wp_enqueue_script( 'echarts-bar-js', $analytify_plugin_url . 'assets/js/dist/chart/bar.js', false, ANALYTIFY_VERSION, true );
+		wp_enqueue_script( 'echarts-js', $analytify_plugin_url . 'assets/js/echarts.min.js',false, ANALYTIFY_VERSION, true );
 }
 /**
  * Active Analytify Free.
