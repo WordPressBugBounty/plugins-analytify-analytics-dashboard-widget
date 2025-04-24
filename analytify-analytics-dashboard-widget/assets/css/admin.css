@@ -411,3 +411,9 @@
 	margin-top: -11px;
 	padding: 15px 23px;
 }
+
+#inner_analytify_dashboard .analytify_status_header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

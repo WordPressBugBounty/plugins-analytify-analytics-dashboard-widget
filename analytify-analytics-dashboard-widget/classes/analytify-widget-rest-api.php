@@ -270,7 +270,11 @@ class Analytify_Widget_Rest_API {
                                 'number' => 0,
                             ),
                         ),
-                        'colors' => apply_filters('analytify_visitor_devices_chart_colors', array('#444444', '#ffbc00', '#ff5252')),
+						'colors' => (function() {
+							$default_colors = array( '#444444', '#ffbc00', '#ff5252' );
+							$filtered_colors = apply_filters( 'analytify_visitor_devices_chart_colors', array() );
+							return array_replace( $default_colors, $filtered_colors );
+						})(),
                     )
                 );
                 $device_category_stats = array();

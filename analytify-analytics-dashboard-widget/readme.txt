@@ -3,8 +3,8 @@ Contributors: hiddenpearls, desideveloper
 Donate link: https://analytify.io/details
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 3.0.1
-Tested up to: 6.7
-Stable tag: 5.5.1
+Tested up to: 6.8
+Stable tag: 6.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,13 @@ Not at all. Analytify uses Google Analytics Universal tracking JS code to track 
 1. [Google Analytics Dashboard Widget for WordPress](https://analytify.io/features/)
 
 == Changelog ==
+
+= 6.0.0 - 2025-04-24 =
+* New Feature: Added a new `view dashboard` icon in Analytify widget header.
+* New Feature: Introduces the Pie chart over doughnut chart in Analytify widget.
+* New Feature: Introducing a new filter to customize the device Pie chart colors in Analytify widget: [analytify_visitor_devices_chart_colors](https://analytify.io/doc/analytify-filters/#changing-colors-of-visitors-devices-pie-chart)
+* New Feature: Introducing a new filter to customize the visitor Pie chart colors in Analytify widget: [analytify_new_vs_returning_visitors_chart_colors](https://analytify.io/doc/analytify-filters/#changing-colors-of-new-vs-returning-vistors-pie-chart)
+* Compatibility: Compatible to WordPress 6.8
 
 = 5.5.1 - 2025-02-04 =
 * Enhancement: Updated ECharts library to the latest version 5.5.1
@@ -226,5 +233,5 @@ Initial Release.
 
 == Upgrade Notice ==
 
-= 5.5.1 =
+= 6.0.0 =
 * Upgrade Google Analytics Widget Now.

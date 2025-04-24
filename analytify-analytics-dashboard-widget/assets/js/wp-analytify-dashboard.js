@@ -648,7 +648,9 @@ jQuery(document).ready(function ($) {
 						}
 
 						if ('' !== boxes_markup) {
-							markup += `<div class="analytify_status_header"><h3>${response.title}</h3></div>
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a>
+							</div>
 							<div class="analytify_status_body">${boxes_markup}</div>
 							<div class="analytify_status_footer"><span class="analytify_info_stats">${response.bottom_info}</span></div>`;
 						}
@@ -670,7 +672,8 @@ jQuery(document).ready(function ($) {
 
 							const citiesPerPage = analytify_dashboard_widget.top_cities_per_page !== undefined ? analytify_dashboard_widget.top_cities_per_page : false;
 
-							markup += `<div class="analytify_status_header"><h3>${response.title}</h3></div>
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>
 							<div class="analytify_status_body">
 								<table class="analytify_data_tables wp_analytify_paginated" ${citiesPerPage && 'data-product-per-page=' + citiesPerPage }>
 									<thead>
@@ -692,7 +695,8 @@ jQuery(document).ready(function ($) {
 
 							const pages_by_views = analytify_dashboard_widget.top_pages_by_views_filter !== undefined ? analytify_dashboard_widget.top_pages_by_views_filter : false;
 
-							markup += `<div class="analytify_status_header"><h3>${response.title}</h3></div>
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>
 							<div class="analytify_status_body">
 								<table class="analytify_data_tables wp_analytify_paginated" ${pages_by_views && 'data-product-per-page=' + pages_by_views }>
 									<thead>
@@ -714,7 +718,9 @@ jQuery(document).ready(function ($) {
 
 							const countriesPerPage = analytify_dashboard_widget.top_countries_filter !== undefined ? analytify_dashboard_widget.top_countries_filter : false;
 
-							markup += `<div class="analytify_status_header"><h3>${response.title}</h3></div>
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a>
+							</div>
 							<div class="analytify_status_body">
 								<table class="analytify_data_tables wp_analytify_paginated" ${countriesPerPage && 'data-product-per-page=' + countriesPerPage }>
 									<thead>
@@ -736,7 +742,8 @@ jQuery(document).ready(function ($) {
 
 							const keywordsPerPage = analytify_dashboard_widget.top_keywords_filter !== undefined ? analytify_dashboard_widget.top_keywords_filter : false;
 
-							markup += `<div class="analytify_status_header"><h3>${response.title}</h3></div>
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>
 							<div class="analytify_status_body">
 								<table class="analytify_data_tables wp_analytify_paginated" ${keywordsPerPage && 'data-product-per-page=' + keywordsPerPage }>
 									<thead>
@@ -759,7 +766,8 @@ jQuery(document).ready(function ($) {
 
 							const reffersPerPage = analytify_dashboard_widget.top_refferals_filter !== undefined ? analytify_dashboard_widget.top_refferals_filter : false;
 
-							markup += `<div class="analytify_status_header"><h3>${response.title}</h3></div>
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>
 							<div class="analytify_status_body">
 								<table class="analytify_data_tables wp_analytify_paginated" ${reffersPerPage && 'data-product-per-page=' + reffersPerPage }>
 									<thead>
@@ -789,7 +797,8 @@ jQuery(document).ready(function ($) {
 
 					} else if ('real-time-statistics' === stats_type) {
 
-						markup = `<div class="analytify_status_header"><h3>${response.title}</h3></div>`;
+						markup = `<div class="analytify_status_header"><h3>${response.title}</h3>
+						<a href="/wp-admin/admin.php?page=analytify-dashboard&show=detail-realtime" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>`;
 						markup += `<div class="analytify_status_body"><div class="analytify_general_status_boxes_wraper analytify_real_time_stats_widget">${realtime_box_structure(response.counter)}</div></div>`;
 					} else if ("visitors-devices" === stats_type) {
 						document.getElementById(
@@ -797,6 +806,7 @@ jQuery(document).ready(function ($) {
 						).style.display = "block";
 						let total_devices = 0;
 						const device_visitors_box = response.stats.data.visitor_devices;
+						const chart_colors = response.stats.data.visitor_devices.colors;
 			
 						// Calculate total devices
 						total_devices =
@@ -807,7 +817,7 @@ jQuery(document).ready(function ($) {
 							if ($("#analytify_chart_visitor_devices").length) {
 							  const setting_title = "Devices of Visitors";
 							  const setting_stats = device_visitors_box.stats;
-							  const setting_colors = ["#444444", "#ffbc00", "#ff5252"];
+							  const setting_colors = chart_colors;
 			
 							  if (total_devices > 0) {
 								const container = document.getElementById(
@@ -824,19 +834,33 @@ jQuery(document).ready(function ($) {
 								container.style.height = "300px"; // Set height in pixels
 			
 								const user_device_graph_options = {
-									tooltip: { trigger: 'item', formatter: "{a} <br/>{b} : {c} ({d}%)" },
 									color: setting_colors,
-									legend: { x: 'center', y: 'bottom', data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label] },
+									legend: { 
+										x: 'center', 
+										y: 'bottom',  
+										bottom: '5%', 
+										textStyle: { fontSize: 14, fontWeight: '500' },
+										formatter: function(name) {
+											let value = setting_stats[name.toLowerCase()].number;
+											if (value >= 1000) {
+												value = (value / 1000).toFixed(1) + 'k';
+											}
+											return `${name}: ${value}`;
+										},
+										data: [setting_stats.mobile.label, setting_stats.tablet.label, setting_stats.desktop.label]
+									},
 									series: [
 										{
 											name: setting_title,
 											type: 'pie',
 											smooth: true,
-											radius: [20, 60],
-											center: ['55%', '42%'],
-											roseType: 'radius',
-											label: { normal: { show: false }, emphasis: { show: false } },
-											lableLine: { normal: { show: false }, emphasis: { show: false } },
+											center: ['50%', '43%'], // Center the chart
+											label: { 
+												show: false
+											},
+											labelLine: {
+												show: false
+											},
 											data: [
 												{ name: setting_stats.mobile.label, value: setting_stats.mobile.number },
 												{ name: setting_stats.tablet.label, value: setting_stats.tablet.number },
@@ -855,6 +879,17 @@ jQuery(document).ready(function ($) {
 									} catch (err) {
 										console.log(err);
 									}
+								}
+								if (!$("#analytify_chart_visitor_devices .analytify_chart_container").length) {
+									const linkMarkup = `<div class="analytify_chart_container">
+										<div class="analytify_status_header">
+											<h3>Visitors Devices</h3>
+											<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard">
+												<span class="dashicons dashicons-chart-bar"></span>
+											</a>
+										</div>
+									</div>`;
+									$("#analytify_chart_visitor_devices").css("position", "relative").prepend(linkMarkup);
 								}
 							  } else {
 

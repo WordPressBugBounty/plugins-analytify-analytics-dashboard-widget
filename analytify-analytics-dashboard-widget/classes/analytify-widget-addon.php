@@ -83,9 +83,17 @@ if ( ! class_exists( 'AnalytifyWidgetAddon' ) ) {
 		 */
 		private function hooks() {
 
-			$this->wp_analytify = $GLOBALS['WP_ANALYTIFY'];
+			if ( isset( $GLOBALS['WP_ANALYTIFY'] ) ) {
+				$this->wp_analytify = $GLOBALS['WP_ANALYTIFY'];
+			} else {
+				$this->wp_analytify = null;
+			}
 
 			if ( ! $this->has_access() ) {
+				return;
+			}
+
+			if ( ! isset( $this->wp_analytify->settings ) ) {
 				return;
 			}
 
@@ -253,7 +261,7 @@ if ( ! class_exists( 'AnalytifyWidgetAddon' ) ) {
 				$menu[] = '<a href="' . esc_url( 'https://analytify.io/pricing?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Go+Pro&utm_campaign=pro-upgrade' ) . '" class="analytify-dashboard-widget-go-pro" target="_blank">' . esc_html__( 'Go Pro', 'analytify-analytics-dashboard-widget' ) . ' <span class="dashicons dashicons-cart"></span></a>';
 			}
 
-			$menu[] = '<a href="' . get_admin_url( null, 'admin.php?page=analytify-dashboard' ) . '">' . esc_html__( 'View Dashboard', 'analytify-analytics-dashboard-widget' ) . ' <span class="dashicons dashicons-chart-bar"></span></a>';
+	
 
 			$html .= implode( ' | ', $menu );
 
