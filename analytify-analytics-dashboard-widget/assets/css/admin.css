@@ -60,10 +60,8 @@
 .analytify-dashboard-widget-footer {
 	border-top: 1px solid #eeeeee;
 	margin-top: 0;
-	padding: 12px 12px 0 12px;
+	padding: 12px 42px 0 42px;
 	color: #ddd;
-	margin-left: -12px;
-	margin-right: -12px;
 	display: flex;
 	justify-content: space-between;
 }
@@ -111,13 +109,11 @@
 #analytify-dashboard-addon .analytify_info_stats {
 	/* margin-top: 12px; */
 	/* border-top: 1px solid #e2e5e8; */
-	padding-top: 12px;
-	width: 100%;
+	padding-top: 2px;
+	width: auto;
 }
 
-#analytify-dashboard-addon .analytify_info_stats:before {
-	top: 9px;
-}
+
 
 .analytify_info_stats sub {
 	font-size: inherit !important;
@@ -128,12 +124,19 @@
 }
 
 #analytify-dashboard-addon #inner_analytify_dashboard .wp_analytify_pagination {
-	float: left !important;
+	float: right !important;
+	border-radius: 5px;
 }
 
 #analytify-dashboard-addon #inner_analytify_dashboard {
 	margin: 0 -12px;
 }
+
+
+#analytify-dashboard-addon #inner_analytify_dashboard:has(#analytify_chart_visitor_devices:not(:empty)):not(:has(.wpb-error-box)) {
+	min-height: 360px;
+}
+
 
 .analytify-dashboard-stats-opts {
 	margin-top: 10px;

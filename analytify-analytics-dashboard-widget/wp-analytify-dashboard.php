@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: Analytify Dashboard Widget
  * Plugin URI: https://analytify.io/add-ons/google-analytics-dashboard-widget-wordpress/
  * Description: This Analytify's free addon adds the Google Analytics widget at WordPress dashboard.
- * Version: 6.0.0
+ * Version: 7.0.0
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Author: Analytify
@@ -15,9 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Text Domain: analytify-analytics-dashboard-widget
  * Domain Path: /languages
  * Requires Plugins: wp-analytify
+ * GitHub Plugin URI: https://github.com/WPBrigade/analytify-analytics-dashboard-widget
  */
 
-define( 'ANALYTIFY_DASHBOARD_VERSION', '6.0.0' );
+define( 'ANALYTIFY_DASHBOARD_VERSION', '7.0.0' );
 define( 'ANALYTIFY_DASHBOARD_ROOT_PATH', dirname( __FILE__ ) );
 define( 'ANALYTIFY_WIDGET_PATH', plugin_dir_url( __FILE__ ) ); 
 

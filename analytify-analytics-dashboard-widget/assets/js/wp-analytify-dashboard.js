@@ -95,6 +95,8 @@ jQuery(document).ready(function ($) {
 				if (clear_contents) {
 					$('#inner_analytify_dashboard').addClass('stats_loading');
 					$('.analytify_widget_return_wrapper').html('');
+					$('#analytify_chart_visitor_devices').html('');
+					$('#analytify_chart_visitor_devices').removeAttr('_echarts_instance_');
 				}
 			},
 			success: function (response) {
@@ -655,7 +657,7 @@ jQuery(document).ready(function ($) {
 							<div class="analytify_status_footer"><span class="analytify_info_stats">${response.bottom_info}</span></div>`;
 						}
 
-					} else if ('top-pages-by-views' === stats_type || 'top-countries' === stats_type || 'top-cities' === stats_type || 'keywords' === stats_type || 'social-media' === stats_type || 'top-reffers' === stats_type) {
+					} else if ('top-pages-by-views' === stats_type || 'top-posts-by-views' === stats_type || 'top-countries' === stats_type || 'top-cities' === stats_type || 'keywords' === stats_type || 'social-media' === stats_type || 'top-reffers' === stats_type) {
 						let table_rows = '';
 						let table_row_num = 1;
 						// Generate table rows (excluding THs).
@@ -699,6 +701,29 @@ jQuery(document).ready(function ($) {
 							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>
 							<div class="analytify_status_body">
 								<table class="analytify_data_tables wp_analytify_paginated" ${pages_by_views && 'data-product-per-page=' + pages_by_views }>
+									<thead>
+										<tr>
+											<th class="analytify_num_row">#</th>
+											<th class="analytify_txt_left">${response.stats.head[0]}</th>
+											<th class="analytify_value_row">${response.stats.head[1]}</th>
+										</tr>
+									</thead>
+									<tbody>${table_rows}</tbody>
+								</table>
+							</div>`;
+
+							if (response.bottom_info) {
+								markup += `<div class="analytify_status_footer"><div class="wp_analytify_pagination"></div><span class="analytify_info_stats">${response.bottom_info}</span></div>`;
+							}
+
+						}else if ('' !== table_rows && 'top-posts-by-views' === stats_type) {
+
+							const posts_by_views = analytify_dashboard_widget.top_posts_by_views_filter !== undefined ? analytify_dashboard_widget.top_posts_by_views_filter : false;
+
+							markup += `<div class="analytify_status_header"><h3>${response.title}</h3>
+							<a href="/wp-admin/admin.php?page=analytify-dashboard" title="View Dashboard"><span class="dashicons dashicons-chart-bar"></span></a></div>
+							<div class="analytify_status_body">
+								<table class="analytify_data_tables wp_analytify_paginated" ${posts_by_views && 'data-product-per-page=' + posts_by_views }>
 									<thead>
 										<tr>
 											<th class="analytify_num_row">#</th>
@@ -926,6 +951,9 @@ jQuery(document).ready(function ($) {
 					wp_analytify_paginated();
 				}
 
+				// Enable table sorting after tables are rendered
+				enableAnalytifyTableSorting();
+
 				$(window).trigger('resize');
 
 			}
@@ -967,4 +995,40 @@ jQuery(document).ready(function ($) {
 		}, 30000);
 	}
 
+});
+
+// Hide duplicate 'No activity during this period.' messages, keep only the first
+jQuery(document).ready(function($) {
+    var $msgs = $(".analytify-stats-error-msg .information-txt:contains('No activity during this period.')");
+    if ($msgs.length > 1) {
+        $msgs.parent().parent().slice(1).hide();
+    }
+});
+
+function analytify_hide_no_activity_stats() {
+    var selected = jQuery('#analytify_dashboard_stats_type').val();
+    if (selected === 'visitors-devices') {
+        // Hide the entire general stats section if there is no data
+        var $noActivity = jQuery('.analytify_widget_return_wrapper .analytify-stats-error-msg .information-txt:contains("No activity during this period.")');
+        if ($noActivity.length) {
+            jQuery('.analytify_general_status.analytify_status_box_wraper.analytify_widget_return_wrapper').hide();
+        }
+        // Show the one in the visitors devices section (if hidden)
+        jQuery('#analytify_chart_visitor_devices .analytify-stats-error-msg').show();
+    } else {
+        // Show the general stats section
+        jQuery('.analytify_general_status.analytify_status_box_wraper.analytify_widget_return_wrapper').show();
+        // Show all messages (reset)
+        jQuery('.analytify-stats-error-msg').show();
+    }
+}
+
+// Run after AJAX loads new data
+jQuery(document).ajaxComplete(function() {
+    analytify_hide_no_activity_stats();
+});
+
+// Also run when the dropdown changes
+jQuery(document).on('submit', '#analytify-dashboard-addon .analytify_form_date', function() {
+    setTimeout(analytify_hide_no_activity_stats, 200); // slight delay for AJAX
 });

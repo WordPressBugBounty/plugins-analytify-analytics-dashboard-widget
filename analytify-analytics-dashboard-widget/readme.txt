@@ -4,7 +4,7 @@ Donate link: https://analytify.io/details
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
 Requires at least: 3.0.1
 Tested up to: 6.8
-Stable tag: 6.0.0
+Stable tag: 7.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,12 @@ Not at all. Analytify uses Google Analytics Universal tracking JS code to track 
 1. [Google Analytics Dashboard Widget for WordPress](https://analytify.io/features/)
 
 == Changelog ==
+
+= 7.0.0 - 2025-07-22 =
+* Enhancement: Improved sorting functionality with enhanced visual indicators and more intuitive controls.
+* Enhancement: Complete migration from Google Analytics 3 (UA) to Google Analytics 4 (GA4) - removed legacy GA3 and GA4 SDK libraries and implemented direct GA4 API integration for improved performance and reliability and help in resolving conflicts with other plugins that were using the same library.
+* Enhancement: Enhanced pagination system with improved navigation and user experience.
+* Enhancement: Added "Top Posts by Views" metric with paginated table display to the Analytics Dashboard Widget.
 
 = 6.0.0 - 2025-04-24 =
 * New Feature: Added a new `view dashboard` icon in Analytify widget header.
@@ -233,5 +239,5 @@ Initial Release.
 
 == Upgrade Notice ==
 
-= 6.0.0 =
-* Upgrade Google Analytics Widget Now.
+= 7.0.0 =
+* Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.

@@ -33,6 +33,7 @@ if (! defined('ABSPATH')) {
 								<option value="general-statistics"><?php analytify_e('General Statistics', 'analytify-analytics-dashboard-widget'); ?></option>
 								<option value="real-time-statistics"><?php analytify_e('Real-Time', 'analytify-analytics-dashboard-widget'); ?></option>
 								<option value="top-pages-by-views"><?php _e('Top Pages', 'analytify-analytics-dashboard-widget'); ?></option>
+								<option value="top-posts-by-views"><?php _e('Top Posts', 'analytify-analytics-dashboard-widget'); ?></option>
 								<option value="top-countries"><?php _e('Top Countries', 'analytify-analytics-dashboard-widget'); ?></option>
 								<option value="top-cities"><?php _e('Top Cities', 'analytify-analytics-dashboard-widget'); ?></option>
 								<option value="keywords"><?php _e('Keywords', 'analytify-analytics-dashboard-widget'); ?></option>

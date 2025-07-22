@@ -163,6 +163,22 @@ class Analytify_Widget_Rest_API {
 				wp_send_json( $stats );
 				return;
 
+			case 'top-posts-by-views':
+				$data = 'ga4' === $this->ga_mode ? $this->get_top_posts_by_views_ga4() : '';
+
+				$stats['success']       = true;
+				$stats['pagination']    = true;
+				$stats['title']         = esc_html__( 'Top Posts ', 'analytify-analytics-dashboard-widget' );
+				$stats['bottom_info']   = esc_html__( 'Top Posts by Views.', 'analytify-analytics-dashboard-widget' );
+				$stats['stats']['head'] = array(
+					esc_html__( 'Title', 'analytify-analytics-dashboard-widget' ),
+					esc_html__( 'Views', 'analytify-analytics-dashboard-widget' ),
+				);
+				$stats['stats']['data'] = $data;
+
+				wp_send_json( $stats );
+				return;
+
 			case 'top-countries':
 				$data = 'ga4' === $this->ga_mode ? $this->get_top_countries_ga4() : '';
 
@@ -502,6 +518,55 @@ class Analytify_Widget_Rest_API {
 		return $stats;
 	}
 
+	/**
+	 * Return 'top_posts_by_views' for GA4
+	 *
+	 * @return array
+	 */
+	private function get_top_posts_by_views_ga4() {
+		$stats = array();
+
+		// API request limit.
+		$api_request_limit = apply_filters( 'analytify_api_limit_widget_addon', 10, 'top_posts_by_views' );
+
+		$raw_stats = $this->wp_analytify->get_reports(
+			'widget-show-top-posts-dashboard',
+			array(
+				'screenPageViews',
+			),
+			$this->get_dates(),
+			array(
+				'pagePathPlusQueryString',
+			),
+			array(
+				'order' => 'desc',
+				'type'  => 'metric',
+				'name'  => 'screenPageViews',
+			),
+			array(
+				'logic' => 'AND',
+				'filters' => array(
+					array(
+						'type'           => 'dimension',
+						'name'           => 'pagePathPlusQueryString',
+						'match_type'     => 5, // Regex match.
+						'value'          => '^/\\d{4}/\\d{2}/\\d{2}/.+', // Assuming posts have "/post/" in their URL.
+					),
+				),
+			),
+			$api_request_limit
+		);
+		if ( $raw_stats && isset( $raw_stats['rows'] ) ) {
+			foreach ( $raw_stats['rows'] as $row ) {
+				$stats[] = array(
+					$row['pagePathPlusQueryString'],
+					$row['screenPageViews'],
+				);
+			}
+		}
+
+		return $stats;
+	}
 
 	/**
 	 * Return 'top_countries' for GA4
