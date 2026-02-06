@@ -1,4 +1,11 @@
 <?php
+/**
+ * Main plugin file for Analytify Dashboard Widget.
+ *
+ * @package Analytify
+ * @subpackage Dashboard Widget
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -7,7 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Plugin Name: Analytify Dashboard Widget
  * Plugin URI: https://analytify.io/add-ons/google-analytics-dashboard-widget-wordpress/
  * Description: This Analytify's free addon adds the Google Analytics widget at WordPress dashboard.
- * Version: 7.0.0
+ * Version: 7.1.1
+ * Requires at least: 4.0
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Author: Analytify
@@ -18,12 +26,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * GitHub Plugin URI: https://github.com/WPBrigade/analytify-analytics-dashboard-widget
  */
 
-define( 'ANALYTIFY_DASHBOARD_VERSION', '7.0.0' );
-define( 'ANALYTIFY_DASHBOARD_ROOT_PATH', dirname( __FILE__ ) );
-define( 'ANALYTIFY_WIDGET_PATH', plugin_dir_url( __FILE__ ) ); 
+define( 'ANALYTIFY_DASHBOARD_VERSION', '7.1.0' );
+define( 'ANALYTIFY_DASHBOARD_ROOT_PATH', __DIR__ );
+define( 'ANALYTIFY_WIDGET_PATH', plugin_dir_url( __FILE__ ) );
 
 // Helper static methods.
-require_once ANALYTIFY_DASHBOARD_ROOT_PATH . '/classes/analytify-widget-helper.php';
+require_once ANALYTIFY_DASHBOARD_ROOT_PATH . '/classes/class-analytify-widget-helper.php';
 
 /**
  * Init plugin.
@@ -47,9 +55,8 @@ function wp_install_analytify_dashboard() {
 		return;
 	}
 
-	require_once ANALYTIFY_DASHBOARD_ROOT_PATH . '/classes/analytify-widget-addon.php';
-	require_once ANALYTIFY_DASHBOARD_ROOT_PATH . '/classes/analytify-widget-rest-api.php';
-
+	require_once ANALYTIFY_DASHBOARD_ROOT_PATH . '/classes/class-analytify-widget-addon.php';
+	require_once ANALYTIFY_DASHBOARD_ROOT_PATH . '/classes/class-analytify-widget-rest-api.php';
 }
 add_action( 'plugins_loaded', 'wp_install_analytify_dashboard', 20 );
 
@@ -64,7 +71,12 @@ function wp_analytify_dashboard_plugin_action_links( $links ) {
 	$settings_link = '';
 
 	if ( ! class_exists( 'WP_Analytify_Pro' ) ) {
-		$settings_link .= sprintf( esc_html__( '%1$s Get Analytify Pro %2$s', 'wp-analytify' ),  '<a  href="https://analytify.io/pricing/?utm_source=analytify-widget-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Get+Analytify+Pro" target="_blank" style="color:#3db634;">', '</a>' );
+		$settings_link .= sprintf(
+			// translators: %1$s: Opening anchor tag with link, %2$s: Closing anchor tag.
+			esc_html__( '%1$s Get Analytify Pro %2$s', 'analytify-analytics-dashboard-widget' ),
+			'<a href="' . esc_url( 'https://analytify.io/pricing/?utm_source=analytify-widget-lite&utm_medium=plugin-action-link&utm_campaign=pro-upgrade&utm_content=Get+Analytify+Pro' ) . '" target="_blank" style="color:#3db634;">',
+			'</a>'
+		);
 		array_unshift( $links, $settings_link );
 	}
 
@@ -79,10 +91,24 @@ function wp_analytify_dashboard_plugin_action_links( $links ) {
 function pa_install_free_dashboard() {
 
 	$action = 'install-plugin';
-	$slug = 'wp-analytify';
-	$link = wp_nonce_url( add_query_arg( array( 'action' => $action, 'plugin' => $slug ), admin_url( 'update.php' ) ), $action . '_' . $slug );
+	$slug   = 'wp-analytify';
+	$link   = wp_nonce_url(
+		add_query_arg(
+			array(
+				'action' => $action,
+				'plugin' => $slug,
+			),
+			admin_url( 'update.php' )
+		),
+		$action . '_' . $slug
+	);
 
-	$message = sprintf('%1$s <br /><a href="%2$s">%3$s</a>' , esc_html__( 'Analytify Core is required to run Analytify dashboard widget.', 'analytify-analytics-dashboard-widget' ), $link, esc_html__( 'Click here to Install Analytify(Core)', 'analytify-analytics-dashboard-widget' ) );
+	$message = sprintf(
+		'%1$s <br /><a href="%2$s">%3$s</a>',
+		esc_html__( 'Analytify Core is required to run Analytify dashboard widget.', 'analytify-analytics-dashboard-widget' ),
+		esc_url( $link ),
+		esc_html__( 'Click here to Install Analytify(Core)', 'analytify-analytics-dashboard-widget' )
+	);
 
 	analytify_widget_notice( $message, 'wp-analytify-danger' );
 }
@@ -100,12 +126,12 @@ function pa_dashboard_layout_script() {
 		return;
 	}
 
-	wp_enqueue_script( 'analytify-dashboard-layout', plugins_url( '/assets/js/wp-analytify-dashboard-layout.js', __FILE__ ), false, ANALYTIFY_DASHBOARD_VERSION );
-	// Get the path of the wp-analytify plugin directory
-		$analytify_plugin_url = plugin_dir_url( 'wp-analytify/wp-analytify.php' );
+	wp_enqueue_script( 'analytify-dashboard-layout', plugins_url( '/assets/js/wp-analytify-dashboard-layout.js', __FILE__ ), array(), ANALYTIFY_DASHBOARD_VERSION, false );
+	// Get the path of the wp-analytify plugin directory.
+	$analytify_plugin_url = plugin_dir_url( 'wp-analytify/wp-analytify.php' );
 
-		// Enqueue the ECharts scripts from wp-analytify
-		wp_enqueue_script( 'echarts-js', $analytify_plugin_url . 'assets/js/echarts.min.js',false, ANALYTIFY_VERSION, true );
+	// Enqueue the ECharts scripts from wp-analytify.
+	wp_enqueue_script( 'echarts-js', $analytify_plugin_url . 'assets/js/echarts.min.js', array(), ANALYTIFY_VERSION, true );
 }
 /**
  * Active Analytify Free.
@@ -115,10 +141,24 @@ function pa_dashboard_layout_script() {
 function pa_activate_free_dashboard() {
 
 	$action = 'activate';
-	$slug = 'wp-analytify/wp-analytify.php';
-	$link = wp_nonce_url( add_query_arg( array( 'action' => $action, 'plugin' => $slug ), admin_url( 'plugins.php' ) ), $action . '-plugin_' . $slug );
+	$slug   = 'wp-analytify/wp-analytify.php';
+	$link   = wp_nonce_url(
+		add_query_arg(
+			array(
+				'action' => $action,
+				'plugin' => $slug,
+			),
+			admin_url( 'plugins.php' )
+		),
+		$action . '-plugin_' . $slug
+	);
 
-	$message = sprintf( '%1$s <br /><a href="%2$s">%3$s</a>' , esc_html__( 'Analytify Core is required to run Analytify dashboard widget.', 'analytify-analytics-dashboard-widget' ), $link, esc_html__( 'Click here to activate Analytify Core plugin.', 'analytify-analytics-dashboard-widget' ) );
+	$message = sprintf(
+		'%1$s <br /><a href="%2$s">%3$s</a>',
+		esc_html__( 'Analytify Core is required to run Analytify dashboard widget.', 'analytify-analytics-dashboard-widget' ),
+		esc_url( $link ),
+		esc_html__( 'Click here to activate Analytify Core plugin.', 'analytify-analytics-dashboard-widget' )
+	);
 
 	analytify_widget_notice( $message, 'wp-analytify-danger' );
 }
@@ -143,10 +183,13 @@ function add_analytify_widget() {
 	);
 
 	// Place the widget at the top.
+	global $wp_meta_boxes;
+	// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Required to reorder dashboard widgets.
 	$normal_dashboard = $wp_meta_boxes['dashboard']['normal']['core'];
-	$widget_instance = array( 'analytify-dashboard-addon-warning' => $normal_dashboard['analytify-dashboard-addon-warning'] );
+	$widget_instance  = array( 'analytify-dashboard-addon-warning' => $normal_dashboard['analytify-dashboard-addon-warning'] );
 	unset( $normal_dashboard['analytify-dashboard-addon-warning'] );
 	$sorted_dashboard = array_merge( $widget_instance, $normal_dashboard );
+	// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- Required to reorder dashboard widgets.
 	$wp_meta_boxes['dashboard']['normal']['core'] = $sorted_dashboard;
 }
 
@@ -175,8 +218,8 @@ function wpa_general_dashboard_area() {
 			$action . '_' . $slug
 		);
 
-		$message  = '<p>' . __( 'Analytify core is required to use this Analytics widget.', 'analytify-analytics-dashboard-widget' ) . '</p>';
-		$message .= '<a href="' . $link . '" class="analytify-active-card-button">' . __( 'Install Analytify Core', 'analytify-analytics-dashboard-widget' ) . '</a>';
+		$message  = '<p>' . esc_html__( 'Analytify core is required to use this Analytics widget.', 'analytify-analytics-dashboard-widget' ) . '</p>';
+		$message .= '<a href="' . esc_url( $link ) . '" class="analytify-active-card-button">' . esc_html__( 'Install Analytify Core', 'analytify-analytics-dashboard-widget' ) . '</a>';
 
 		AnalytifyWidgetHelper::notice( $message );
 		return;
@@ -199,8 +242,8 @@ function wpa_general_dashboard_area() {
 			$action . '-plugin_' . $slug
 		);
 
-		$message  = '<p>' . __( 'Analytify core is required to use this Analytics widget.', 'analytify-analytics-dashboard-widget' ) . '</p>';
-		$message .= '<a href="' . $link . '" class="analytify-active-card-button">' . __( 'Activate Analytify Core', 'analytify-analytics-dashboard-widget' ) . '</a>';
+		$message  = '<p>' . esc_html__( 'Analytify core is required to use this Analytics widget.', 'analytify-analytics-dashboard-widget' ) . '</p>';
+		$message .= '<a href="' . esc_url( $link ) . '" class="analytify-active-card-button">' . esc_html__( 'Activate Analytify Core', 'analytify-analytics-dashboard-widget' ) . '</a>';
 
 		AnalytifyWidgetHelper::notice( $message );
 		return;
@@ -210,20 +253,20 @@ function wpa_general_dashboard_area() {
 /**
  * Add custom admin notice.
  *
- * @param string $message Custom Message.
- * @param string $class   Class can be: 'wp-analytify-success', 'wp-analytify-danger'.
+ * @param string $message      Custom Message.
+ * @param string $notice_class Class can be: 'wp-analytify-success', 'wp-analytify-danger'.
  *
  * @since 1.0.3
  */
-function analytify_widget_notice( $message, $class ) {
+function analytify_widget_notice( $message, $notice_class ) {
 
-	echo '<div class="wp-analytify-notification ' . $class . '">
-		<a class="" href="#" aria-label="Dismiss the welcome panel"></a>
+	echo '<div class="wp-analytify-notification ' . esc_attr( $notice_class ) . '">
+		<a class="" href="#" aria-label="' . esc_attr__( 'Dismiss the welcome panel', 'analytify-analytics-dashboard-widget' ) . '"></a>
 		<div class="wp-analytify-notice-logo">
-			<img src="' . plugins_url( 'assets/images/logo.svg', __FILE__ ) . '" alt="analytify">
+			<img src="' . esc_url( plugins_url( 'assets/images/logo.svg', __FILE__ ) ) . '" alt="analytify">
 		</div>
 		<div class="wp-analytify-notice-discription">
-			<p>' . $message . '</p>
+			<p>' . ( $message ? wp_kses_post( $message ) : '' ) . '</p>
 		</div>
 	</div>';
 }
@@ -243,19 +286,8 @@ function analytify_widget_scripts( $page ) {
 		wp_enqueue_style( 'analytify-widget-admin', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), ANALYTIFY_DASHBOARD_VERSION );
 	}
 }
-add_action( 'admin_enqueue_scripts', 'analytify_widget_scripts' ); 
+add_action( 'admin_enqueue_scripts', 'analytify_widget_scripts' );
 
-/**
- * Load text domain.
- *
- * @since 1.0.2
- */
-function wp_analytify_dashboard_widget_load_text_domain() {
-
-	$plugin_dir = basename( dirname( __FILE__ ) );
-	load_plugin_textdomain( 'analytify-analytics-dashboard-widget', false, $plugin_dir . '/languages/' );
-}
-add_action( 'init', 'wp_analytify_dashboard_widget_load_text_domain' );
 
 /**
  * Add inline css script added by user in settings.
@@ -274,7 +306,7 @@ function wp_analytify_dashboard_widget_inline_styles() {
 		$custom_css = isset( $GLOBALS['WP_ANALYTIFY'] ) ? $GLOBALS['WP_ANALYTIFY']->settings->get_option( 'custom_css_code', 'wp-analytify-advanced' ) : null;
 
 		if ( ! empty( $custom_css ) ) {
-			echo '<style type="text/css">' . $custom_css . '</style>';
+			echo '<style type="text/css">' . esc_html( wp_strip_all_tags( $custom_css ) ) . '</style>';
 		}
 	}
 }

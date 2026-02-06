@@ -1,12 +1,12 @@
-=== Google Analytics Dashboard Widget by Analytify ===
+=== Analytify - Dashboard Widget for Google Analytics ===
 Contributors: hiddenpearls, desideveloper
 Donate link: https://analytify.io/details
 Tags: google analytics, google analytics dashboard, google analytics 4, WordPress Analytics, analytics
-Requires at least: 3.0.1
-Tested up to: 6.8
-Stable tag: 7.0.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Requires at least: 4.0
+Tested up to: 6.9
+Stable tag: 7.1.1
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Google Analytics Dashboard widget is a Free Add-on for Google Analytics by Analytify plugin to show Google Analytics widget at WordPress dashboard.
 
@@ -88,6 +88,20 @@ Not at all. Analytify uses Google Analytics Universal tracking JS code to track 
 1. [Google Analytics Dashboard Widget for WordPress](https://analytify.io/features/)
 
 == Changelog ==
+
+= 7.1.1 - 2026-01-06 =
+* Enhancement: Improved translation function usage by ensuring all gettext functions use literal strings instead of variables.
+* Compatibility: Compatible to WordPress 6.9
+
+= 7.1.0 - 2026-01-02 =
+* Security: Fixed direct file access vulnerability by adding ABSPATH checks to all PHP files.
+* Security: Fixed unsafe output by properly escaping all variables and options when echoed using esc_url(), esc_attr(), esc_html(), esc_html_e(), and wp_kses_post().
+* Enhancement: Fixed license declaration mismatch - standardized to GPLv3 or later in both readme.txt and plugin header.
+* Enhancement: Fixed internationalization issues - corrected text domain from 'wp-analytify' to 'analytify-analytics-dashboard-widget' throughout the plugin.
+* Enhancement: Replaced _e() function calls with esc_html_e() or analytify_e() wrapper for proper escaping.
+* Enhancement: Removed deprecated load_plugin_textdomain() function call (WordPress 4.6+ handles translations automatically).
+* Enhancement: Improved translation function usage by ensuring all gettext functions use literal strings instead of variables.
+* Compatibility: Compatible to WordPress 6.9
 
 = 7.0.0 - 2025-07-22 =
 * Enhancement: Improved sorting functionality with enhanced visual indicators and more intuitive controls.
@@ -239,5 +253,5 @@ Initial Release.
 
 == Upgrade Notice ==
 
-= 7.0.0 =
+= 7.1.1 =
 * Important Release, Update carefully. Report us back if you face any issues. Thanks for using Analytify.
