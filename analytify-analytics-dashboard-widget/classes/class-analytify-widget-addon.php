@@ -264,12 +264,17 @@ if ( ! class_exists( 'AnalytifyWidgetAddon' ) ) {
 
 			$html = '<div class="analytify-dashboard-widget-footer">';
 
-			$menu[] = '<a href="' . esc_url( 'https://analytify.io/documentation?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Documentation&utm_campaign=user-guide' ) . '" target="_blank">' . esc_html__( 'Documentation ', 'analytify-analytics-dashboard-widget' ) . ' <span class="dashicons dashicons-lightbulb"></span></a>';
+			// Use SVGs from assets/images directory.
+			$assets_url = plugins_url( 'assets/images', __DIR__ );
+			$doc_svg    = '<img src="' . esc_url( $assets_url . '/document.svg' ) . '" alt="Documentation" class="analytify-widget-footer-icon" />';
+			$addons_svg = '<img src="' . esc_url( $assets_url . '/addons.svg' ) . '" alt="Add-on" class="analytify-widget-footer-icon" />';
+
+			$menu[] = '<a href="' . esc_url( 'https://analytify.io/documentation?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Documentation&utm_campaign=user-guide' ) . '" target="_blank">' . $doc_svg . esc_html__( 'Documentation', 'analytify-analytics-dashboard-widget' ) . '</a>';
 
 			if ( class_exists( 'WP_Analytify_Pro_Base' ) ) {
-				$menu[] = '<a href="' . esc_url( 'https://analytify.io/add-ons?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Addons&utm_campaign=pro-upgrade' ) . '" target="_blank">' . esc_html__( 'Addons', 'analytify-analytics-dashboard-widget' ) . ' <span class="dashicons dashicons-networking"></span></a>';
+				$menu[] = '<a href="' . esc_url( 'https://analytify.io/add-ons?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Addons&utm_campaign=pro-upgrade' ) . '" target="_blank">' . $addons_svg . esc_html__( 'Add-ons', 'analytify-analytics-dashboard-widget' ) . '</a>';
 			} else {
-				$menu[] = '<a href="' . esc_url( 'https://analytify.io/pricing?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Go+Pro&utm_campaign=pro-upgrade' ) . '" class="analytify-dashboard-widget-go-pro" target="_blank">' . esc_html__( 'Go Pro', 'analytify-analytics-dashboard-widget' ) . ' <span class="dashicons dashicons-cart"></span></a>';
+				$menu[] = '<a href="' . esc_url( 'https://analytify.io/pricing?utm_source=analytify-widget-lite&utm_medium=dashboard-widget&utm_content=Go+Pro&utm_campaign=pro-upgrade' ) . '" class="analytify-dashboard-widget-go-pro" target="_blank"><span class="dashicons dashicons-cart"></span> ' . esc_html__( 'Go Pro', 'analytify-analytics-dashboard-widget' ) . '</a>';
 			}
 
 			$html .= implode( ' | ', $menu );

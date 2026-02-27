@@ -962,8 +962,8 @@ jQuery( document ).ready( function ( $ ) {
 					wp_analytify_paginated();
 				}
 
-				// Only enable if wp-analytify-pro plugin is installed
-				if ( 'undefined' !== typeof wpAnalytifyPro ) {
+				// Only enable if wp-analytify-pro plugin is installed and function is available
+				if ( 'undefined' !== typeof wpAnalytifyPro && 'function' === typeof enableAnalytifyTableSorting ) {
 					enableAnalytifyTableSorting();
 				}
 
